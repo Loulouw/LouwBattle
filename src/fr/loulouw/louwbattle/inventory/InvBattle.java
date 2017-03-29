@@ -1,12 +1,16 @@
 package fr.loulouw.louwbattle.inventory;
 
 import fr.loulouw.louwbattle.Battle;
+import fr.loulouw.louwbattle.PlayerBattle;
 import fr.loulouw.louwbattle.outils.ItemCreator;
 import fr.loulouw.louwbattle.outils.Menu;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.entity.Bat;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.player.PlayerUnleashEntityEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -46,7 +50,12 @@ public class InvBattle {
         menu.addItemAction(quitter, 2, 6, new Menu.onClick() {
             @Override
             public boolean click(ClickType clickType, Player player, Inventory inventory, int slot, ItemStack item) {
-
+                PlayerBattle pb = PlayerBattle.listPlayer.get(player);
+                if(Battle.battleEnAttente.getListPlayer().contains(pb)){
+                    Battle.battleEnAttente.getListPlayer().remove(pb);
+                }else{
+                    player.sendMessage(ChatColor.RED + "Vous n'êtes pas dans la partie");
+                }
                 return true;
             }
         });
@@ -54,7 +63,15 @@ public class InvBattle {
         menu.addItemAction(rejoindre, 2, 8, new Menu.onClick() {
             @Override
             public boolean click(ClickType clickType, Player player, Inventory inventory, int slot, ItemStack item) {
-                new Battle();
+                PlayerBattle pb = PlayerBattle.listPlayer.get(player);
+                if(pb==null){
+                    Bukkit.getServer().broadcastMessage("bite");
+                }
+                if(!Battle.battleEnAttente.getListPlayer().contains(pb)){
+                    Battle.battleEnAttente.getListPlayer().add(pb);
+                }else{
+                    player.sendMessage(ChatColor.RED + "Vous êtes déjà dans la partie");
+                }
                 return true;
             }
         });

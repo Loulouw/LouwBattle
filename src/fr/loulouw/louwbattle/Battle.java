@@ -4,35 +4,47 @@ package fr.loulouw.louwbattle;
 import com.sk89q.worldedit.BlockVector;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import fr.loulouw.louwbattle.scoreboard.ScoPreparationBattle;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.TreeSet;
 
 public class Battle {
 
+    public static Battle battleEnCours;
+    public static Battle battleEnAttente;
+
     private String NAME_OF_ARENA = "";
     private World world;
-    private TreeSet<PlayerBattle> listPlayer = new TreeSet<>();
+    private ObservableList<PlayerBattle> listPlayer;
     private boolean enCours = false;
     private int tempsMax;
     private int tempsAttenteMin;
     private int tempsAttenteMax;
-    private ArrayList<Location> positionSpawn = new ArrayList<>();
-
+    private ArrayList<Location> positionSpawn;
+    private int secondeAvantBattle;
 
     public Battle() {
+        listPlayer = FXCollections.observableArrayList();
+        positionSpawn = new ArrayList<>();
+
         NAME_OF_ARENA = Main.javaplugin.getConfig().getString("nameregion");
         tempsMax = Main.javaplugin.getConfig().getInt("maxtempbattle");
         world = Main.javaplugin.getServer().getWorld("world");
         tempsAttenteMin = Main.javaplugin.getConfig().getInt("tempsattentemin");
         tempsAttenteMax = Main.javaplugin.getConfig().getInt("tempsattentemax");
+
         if (world == null) {
             Bukkit.getConsoleSender().sendMessage("Erreur le monde n'existe pas");
         }
+
+        getRegion();
     }
 
     private void getRegion() {
@@ -84,19 +96,20 @@ public class Battle {
 
     public void processStart() {
         final int waitingTimeSecond = (new Random().nextInt(tempsAttenteMax - tempsAttenteMin) + tempsAttenteMin) * 60;
-        final int messageChat = waitingTimeSecond - 10;
-        final int scoreboard = waitingTimeSecond - 10;
+        final int messageChat = 5;
+        final int scoreboard = 10;
 
         //15min : Message dans le chat : 900s
         //10min scoreboard : 600s
 
         BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
-        scheduler.scheduleSyncRepeatingTask(Main.javaplugin, new Runnable() {
+        int taskID = scheduler.scheduleSyncRepeatingTask(Main.javaplugin, new Runnable() {
             int tick = 0;
 
             @Override
             public void run() {
                 tick++;
+                secondeAvantBattle = waitingTimeSecond - tick;
                 if (tick == messageChat) {
                     String texte = ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "" + "Battle dans " + ChatColor.GOLD + "" + ChatColor.BOLD + " 15 " + ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + " min !";
                     String texte2 = ChatColor.WHITE + "Pour rejoindre : " + ChatColor.BOLD + "/battle";
@@ -104,9 +117,52 @@ public class Battle {
                        p.sendTitle(texte,texte2,10,80,10);
                     }
                 } else if (tick == scoreboard) {
-
+                    ScoPreparationBattle.showSidebar();
                 }
             }
         }, 0L, 20L);
+
+        new BukkitRunnable(){
+            public void run(){
+                Bukkit.getScheduler().cancelTask(taskID);
+                ScoPreparationBattle.hideSidebar();
+            }
+        }.runTaskLater(Main.javaplugin,waitingTimeSecond * 20);
+    }
+
+    public String getNAME_OF_ARENA() {
+        return NAME_OF_ARENA;
+    }
+
+    public World getWorld() {
+        return world;
+    }
+
+    public ObservableList<PlayerBattle> getListPlayer() {
+        return listPlayer;
+    }
+
+    public boolean isEnCours() {
+        return enCours;
+    }
+
+    public int getTempsMax() {
+        return tempsMax;
+    }
+
+    public int getTempsAttenteMin() {
+        return tempsAttenteMin;
+    }
+
+    public int getTempsAttenteMax() {
+        return tempsAttenteMax;
+    }
+
+    public ArrayList<Location> getPositionSpawn() {
+        return positionSpawn;
+    }
+
+    public int getSecondeAvantBattle() {
+        return secondeAvantBattle;
     }
 }
