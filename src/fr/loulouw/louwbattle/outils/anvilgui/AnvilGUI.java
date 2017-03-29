@@ -1,6 +1,6 @@
 package fr.loulouw.louwbattle.outils.anvilgui;
 
-import fr.loulouw.louwbattle.inventaire.InventoryPerso;
+import fr.loulouw.louwbattle.outils.Menu;
 import fr.loulouw.louwbattle.outils.anvilgui.version.Version;
 import fr.loulouw.louwbattle.outils.anvilgui.version.VersionWrapper;
 import org.apache.commons.lang3.Validate;
@@ -10,7 +10,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
@@ -18,9 +17,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 
 /**
@@ -68,7 +64,7 @@ public class AnvilGUI {
     /**
      * Inventory to open at end
      */
-    private InventoryPerso invAtEnd;
+    private Menu menu;
 
     /**
      * Create an AnvilGUI and open it for the player
@@ -93,8 +89,8 @@ public class AnvilGUI {
      * @param biFunction A {@link BiFunction} that is called when the player clicks the {@link Slot#OUTPUT} slot
      * @throws NullPointerException If the server version isn't supported
      */
-    public AnvilGUI(Plugin plugin, Player holder, String insert,InventoryPerso invAtEnd, BiFunction<Player, String, String> biFunction) {
-        this.invAtEnd = invAtEnd;
+    public AnvilGUI(Plugin plugin, Player holder, String insert,Menu menu, BiFunction<Player, String, String> biFunction) {
+        this.menu = menu;
         this.holder = holder;
         this.biFunction = biFunction;
 
@@ -140,9 +136,8 @@ public class AnvilGUI {
         wrapper.sendPacketCloseWindow(holder, containerId);
 
         HandlerList.unregisterAll(listener);
-        if(this.invAtEnd != null){
-            invAtEnd.generateInventory();
-            holder.openInventory(invAtEnd.getInventory());
+        if(this.menu != null){
+            menu.openInventory(holder);
         }
     }
 

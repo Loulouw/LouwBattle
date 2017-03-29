@@ -1,0 +1,8 @@
+#Location de l'arene
+world: world
+nameregion: arena
+
+#Temps en minutes
+maxtempbattle: 25
+tempsattentemin: 30
+tempsattentemax: 120

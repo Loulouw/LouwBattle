@@ -13,9 +13,7 @@ import java.util.List;
 
 public class ItemCreator {
 
-    public static ItemStack createItemStack(ItemStack preItemStack, Material material, int quantite, String nom, List<String> description, boolean indestructible, List<Tuple<Enchantment, Integer>> enchantements, boolean apparenceEnchantement, boolean hideEnchantementName) {
-        ItemStack itemStack = preItemStack;
-        if (itemStack == null) itemStack = new ItemStack(material, quantite);
+    public static ItemStack createItemStack(ItemStack itemStack, String nom, List<String> description, boolean indestructible, List<Tuple<Enchantment, Integer>> enchantements, boolean apparenceEnchantement, boolean hideEnchantementName) {
         ItemMeta itemMeta = itemStack.getItemMeta();
         itemMeta.setDisplayName(nom);
         if (description != null) itemMeta.setLore(description);
@@ -33,9 +31,7 @@ public class ItemCreator {
         return itemStack;
     }
 
-    public static ItemStack createItemStack(ItemStack preItemStack, Material material, int quantite, String nom, List<String> description, boolean indestructible, boolean apparenceEnchantement, boolean hideEnchantementName) {
-        ItemStack itemStack = preItemStack;
-        if (itemStack == null) itemStack = new ItemStack(material, quantite);
+    public static ItemStack createItemStack(ItemStack itemStack, String nom, List<String> description, boolean indestructible, boolean apparenceEnchantement, boolean hideEnchantementName) {
         ItemMeta itemMeta = itemStack.getItemMeta();
         itemMeta.setDisplayName(nom);
         if (description != null) itemMeta.setLore(description);

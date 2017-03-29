@@ -1,5 +1,6 @@
 package fr.loulouw.louwbattle.outils;
 
+import fr.loulouw.louwbattle.Main;
 import org.bukkit.enchantments.Enchantment;
 
 import java.util.HashMap;
@@ -20,4 +21,5 @@ public class Outils {
         }catch (Exception ignored){}
         return res;
     }
+
 }

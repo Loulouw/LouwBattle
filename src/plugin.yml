@@ -1,0 +1,9 @@
+name: LouwBattle
+version: 1.0
+author: Loulouw
+main: fr.loulouw.louwbattle.Main
+softdepend: [WorldGuard,WorldEdit]
+commands:
+  battle:
+    description: Accéder à l'interface battle
+    usage: /battle
