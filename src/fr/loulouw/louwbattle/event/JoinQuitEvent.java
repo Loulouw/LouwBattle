@@ -12,9 +12,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import static fr.loulouw.louwbattle.PlayerBattle.listPlayer;
 
-/**
- * Created by Loulouw on 29/03/2017.
- */
 public class JoinQuitEvent implements Listener{
 
     public JoinQuitEvent(){

@@ -4,20 +4,26 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 public class PlayerBattle implements Comparable<PlayerBattle> {
 
-    public static HashMap<Player,PlayerBattle> listPlayer;
+    public static HashMap<Player, PlayerBattle> listPlayer;
     private YamlConfiguration yc;
     private Player player;
     private HashMap<String, Integer> stats;
+    private boolean onBattle;
+    private boolean onSpecatate;
+    private boolean onWait;
 
     public PlayerBattle(Player p) {
         player = p;
-
+        onBattle = false;
+        onSpecatate = false;
+        onWait = false;
         stats = new HashMap<>();
         stats.put("nbKill", 0);
         stats.put("nbMort", 0);
@@ -41,17 +47,15 @@ public class PlayerBattle implements Comparable<PlayerBattle> {
     }
 
     private void loadPlayer() {
-        File file = new File("plugins/LouwBattle/StatsBattle/" + player.getUniqueId() + ".yml");
+        final File file = new File("plugins" + File.separator + "LouwBattle" + File.separator + "Stats" + File.separator + player.getUniqueId() + ".yml");
+        final File chemin = new File("plugins" + File.separator + "LouwBattle" + File.separator + "Stats");
+
+        if (!chemin.exists()) chemin.mkdir();
 
         if (!file.exists()) {
             createFile(file);
         } else {
-            yc = YamlConfiguration.loadConfiguration(file);
-            HashMap<String, Integer> ancStats = (HashMap<String, Integer>) stats.clone();
-            stats.clear();
-            for (Map.Entry<String, Integer> entry : ancStats.entrySet()) {
-                stats.put(entry.getKey(), yc.getInt(entry.getKey()));
-            }
+            loadFile(file);
         }
 
     }
@@ -60,14 +64,23 @@ public class PlayerBattle implements Comparable<PlayerBattle> {
         try {
             file.createNewFile();
             yc = YamlConfiguration.loadConfiguration(file);
-
+            FileWriter fw = new FileWriter(file);
             for (Map.Entry<String, Integer> entry : stats.entrySet()) {
-                if (!yc.contains(entry.getKey())) {
-                    yc.set(entry.getKey(), entry.getValue());
-                }
+                fw.write(entry.getKey() + ": " + entry.getValue() + "\n");
             }
+            fw.close();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void loadFile(File file) {
+        yc = YamlConfiguration.loadConfiguration(file);
+        HashMap<String, Integer> ancStats = (HashMap<String, Integer>) stats.clone();
+        stats.clear();
+
+        for (Map.Entry<String, Integer> entry : ancStats.entrySet()) {
+            stats.put(entry.getKey(), yc.getInt(entry.getKey()));
         }
     }
 
@@ -103,11 +116,35 @@ public class PlayerBattle implements Comparable<PlayerBattle> {
         return stats;
     }
 
-    public double getCote(){
+    public double getCote() {
         double res = 1;
-        if(stats.get("nbMort") != 0){
-            res = 1 + (stats.get("nbKill")/stats.get("nbMort"));
+        if (stats.get("nbMort") != 0) {
+            res = 1 + (stats.get("nbKill") / stats.get("nbMort"));
         }
         return res;
+    }
+
+    public boolean isOnBattle() {
+        return onBattle;
+    }
+
+    public void setOnBattle(boolean onBattle) {
+        this.onBattle = onBattle;
+    }
+
+    public boolean isOnSpecatate() {
+        return onSpecatate;
+    }
+
+    public void setOnSpecatate(boolean onSpecatate) {
+        this.onSpecatate = onSpecatate;
+    }
+
+    public boolean isOnWait() {
+        return onWait;
+    }
+
+    public void setOnWait(boolean onWait) {
+        this.onWait = onWait;
     }
 }

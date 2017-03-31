@@ -50,7 +50,8 @@ public class ScoPreparationBattle {
         sidebar = new Sidebar(ChatColor.LIGHT_PURPLE + "" + ChatColor.BOLD + "Battle", Main.javaplugin, 20);
         sidebar.addEntry(new SidebarString(""));
         sidebar.addEntry(new SidebarString("=-=-=-=-=-=-=-=-"));
-        sidebar.addEntry(new SidebarString("Joueurs : " + Battle.battleEnAttente.getListPlayer().size() + "/" + Battle.battleEnAttente.getPositionSpawn().size()));
+        SidebarString s3 = new SidebarString("Joueurs : " + Battle.battleEnAttente.getListPlayer().size() + "/" + Battle.battleEnAttente.getPositionSpawn().size());
+        sidebar.addEntry(s3);
 
         SidebarString s4 = new SidebarString(".");
         sidebar.addEntry(s4);
@@ -90,6 +91,9 @@ public class ScoPreparationBattle {
                 s4.addVariation(".");
                 s5.addVariation(". ");
             }
+
+            s3.removeVariation(s3.getVariations().get(0));
+            s3.addVariation("Joueurs : " + Battle.battleEnAttente.getListPlayer().size() + "/" + Battle.battleEnAttente.getPositionSpawn().size());
         });
 
         sidebar.addEntry(new SidebarString("-=-=-=-=-=-=-=-="));

@@ -1,6 +1,7 @@
 #Location de l'arene
 world: world
 nameregion: arena
+nameregionspec: spectator
 
 #Temps en minutes
 maxtempbattle: 25

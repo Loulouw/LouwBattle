@@ -3,6 +3,8 @@ package fr.loulouw.louwbattle;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import fr.loulouw.louwbattle.command.CommandBattle;
 import fr.loulouw.louwbattle.event.JoinQuitEvent;
+import fr.loulouw.louwbattle.event.PlayerDeadEvent;
+import fr.loulouw.louwbattle.event.PlayerMoveEvent;
 import fr.loulouw.louwbattle.scoreboard.ScoPreparationBattle;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -37,11 +39,16 @@ public class Main extends JavaPlugin{
 
         getLogger().info("[*] LouwBattle est demarre");
 
-        new JoinQuitEvent();
         PlayerBattle.listPlayer = new HashMap<>();
         for(Player p : getServer().getOnlinePlayers()){
             listPlayer.put(p,new PlayerBattle(p));
         }
+
+        Battle.initialisation();
+
+        new PlayerDeadEvent();
+        new PlayerMoveEvent();
+        new JoinQuitEvent();
 
         Battle.battleEnAttente = new Battle();
         Battle.battleEnAttente.processStart();
